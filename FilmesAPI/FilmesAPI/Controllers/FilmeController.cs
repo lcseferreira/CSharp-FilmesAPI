@@ -14,7 +14,7 @@ namespace FilmesAPI.Controllers
         {
             filmes.Add(filme);
 
-            return CreatedAtAction(nameof(RecuperaFilmesPorID), new { Id = filme }, filme); // Retorna o status e onde ele está sendo criado (Location no HEAD)
+            return CreatedAtAction(nameof(RecuperaFilmesPorID), new { Id = filme }, filme); // Retorna o status (201) e onde ele está sendo criado (Location no HEAD)
         }
 
         [HttpGet] // Verbo GET = obter (read do CRUD)
