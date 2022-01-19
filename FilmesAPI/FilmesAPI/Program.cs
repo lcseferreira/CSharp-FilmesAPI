@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// Configuração com o banco de dados Oracle
+// Configuração com o banco de dados Oracle - O DbContext serve para abstrair a lógica de acesso ao banco de dados.
 builder.Services.AddDbContext<FilmeContext>(opts => opts.UseOracle(builder.Configuration.GetConnectionString("FilmeConnection")));
 
 

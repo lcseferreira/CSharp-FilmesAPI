@@ -10,6 +10,7 @@ namespace FilmesAPI.Data
 
         }
 
+        // Contexto para usarmos no controller
         public DbSet<Filme> Filmes { get; set; }
     }
 }
