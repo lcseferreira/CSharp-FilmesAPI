@@ -1,11 +1,18 @@
-﻿namespace FilmesAPI.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FilmesAPI.Models
 {
     public class Filme
     {
-        // Propriedades da classe Filme
+        [Required(ErrorMessage = "O título do filme é obrigatório.")]
         public string Titulo { get; set; }
+
+        [Required(ErrorMessage = "O diretor do filme é obrigatório.")]
         public string Diretor { get; set; }
+
         public string Genero { get; set; }
+
+        [Range(1, 600, ErrorMessage = "O filme deve ter no mínimo 1 minuto e no máximo 600 minutos.")]
         public int Duracao { get; set; }
 
     }
