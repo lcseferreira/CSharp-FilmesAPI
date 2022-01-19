@@ -1,4 +1,5 @@
 ﻿using FilmesAPI.Data;
+using FilmesAPI.Data.DTOs;
 using FilmesAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +19,17 @@ namespace FilmesAPI.Controllers
         }
 
         [HttpPost] // Verbo POST = inserir (create do CRUD)
-        public IActionResult AdicionaFilme([FromBody] Filme filme) // O [FromBody] indica que a requisição será passada via corpo da mensagem (JSON)
+        public IActionResult AdicionaFilme([FromBody] CreateFilmeDTO filmeDTO) // O [FromBody] indica que a requisição será passada via corpo da mensagem (JSON)
         {
+            // Criando um objeto com construtor implícito
+            Filme filme = new Filme // Convertendo CreateFilmeDTO em Filme
+            {
+                Titulo = filmeDTO.Titulo,
+                Diretor = filmeDTO.Diretor,
+                Genero = filmeDTO.Genero,
+                Duracao = filmeDTO.Duracao
+            };
+
             _context.Filmes.Add(filme); // Contexto usado para adicionarmos o filme no banco de dados
             _context.SaveChanges(); // Salvando as alterações no banco
             return CreatedAtAction(nameof(RecuperaFilmesPorID), new { Id = filme }, filme); // Retorna o status (201) e onde ele está sendo criado (Location no HEAD)
@@ -38,25 +48,35 @@ namespace FilmesAPI.Controllers
 
             if (filme != null)
             {
-                return Ok(filme); // Retornando OK se acharmos o filme
+                ReadFilmeDTO filmeDTO = new ReadFilmeDTO
+                {
+                    Id = filme.Id,
+                    Titulo = filme.Titulo,
+                    Diretor = filme.Diretor,
+                    Genero = filme.Genero,
+                    Duracao = filme.Duracao,
+                    HoraDaConsulta = DateTime.Now
+                };
+
+                return Ok(filmeDTO); // Retornando OK se acharmos o filme
             }
             return NotFound(); // Retornando NotFound se não acharmos o filme
         }
 
         [HttpPut("{id}")] // Verbo PUT = update do CRUD
-        public IActionResult AtualizaFilme(int id, [FromBody] Filme filmeNovo)
+        public IActionResult AtualizaFilme(int id, [FromBody] UpdateFilmeDTO filmeDTONovo)
         {
-            Filme filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id); 
-            
+            Filme filme = _context.Filmes.FirstOrDefault(filme => filme.Id == id);
+
             if (filme == null)
             {
                 return NotFound();
             }
 
-            filme.Titulo = filmeNovo.Titulo;
-            filme.Diretor = filmeNovo.Diretor;
-            filme.Genero = filmeNovo.Genero;
-            filme.Duracao = filmeNovo.Duracao;
+            filme.Titulo = filmeDTONovo.Titulo;
+            filme.Diretor = filmeDTONovo.Diretor;
+            filme.Genero = filmeDTONovo.Genero;
+            filme.Duracao = filmeDTONovo.Duracao;
 
             _context.SaveChanges();
 
