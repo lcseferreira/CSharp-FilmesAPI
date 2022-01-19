@@ -10,10 +10,15 @@ namespace FilmesAPI.Controllers
         private static List<Filme> filmes = new List<Filme>();
 
         [HttpPost] // Verbo POST = inserir (create do CRUD)
-        public void AdicionaFilme([FromBody] Filme filme) // O [FromBody] indica que a requisição será passada via corpo da mensagem (JSON)
+        public void AdicionarFilme([FromBody] Filme filme) // O [FromBody] indica que a requisição será passada via corpo da mensagem (JSON)
         {
             filmes.Add(filme);
-             
+        }
+
+        [HttpGet] // Verbo GET = obter (read do CRUD)
+        public IEnumerable<Filme> RecuperarFilmes()
+        {
+            return filmes;
         }
     }
 }
