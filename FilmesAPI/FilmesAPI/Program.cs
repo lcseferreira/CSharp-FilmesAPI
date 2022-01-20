@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Configuração com o banco de dados Oracle - O DbContext serve para abstrair a lógica de acesso ao banco de dados.
 builder.Services.AddDbContext<FilmeContext>(opts => opts.UseOracle(builder.Configuration.GetConnectionString("FilmeConnection")));
 
+// Configuração do AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

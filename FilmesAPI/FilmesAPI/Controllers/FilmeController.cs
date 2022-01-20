@@ -1,4 +1,5 @@
-﻿using FilmesAPI.Data;
+﻿using AutoMapper;
+using FilmesAPI.Data;
 using FilmesAPI.Data.DTOs;
 using FilmesAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -12,23 +13,19 @@ namespace FilmesAPI.Controllers
 
         // Fazendo a injeção de dependência
         private FilmeContext _context;
+        private IMapper _mapper;
 
-        public FilmeController(FilmeContext context)
+        public FilmeController(FilmeContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpPost] // Verbo POST = inserir (create do CRUD)
         public IActionResult AdicionaFilme([FromBody] CreateFilmeDTO filmeDTO) // O [FromBody] indica que a requisição será passada via corpo da mensagem (JSON)
         {
-            // Criando um objeto com construtor implícito
-            Filme filme = new Filme // Convertendo CreateFilmeDTO em Filme
-            {
-                Titulo = filmeDTO.Titulo,
-                Diretor = filmeDTO.Diretor,
-                Genero = filmeDTO.Genero,
-                Duracao = filmeDTO.Duracao
-            };
+            // Convertendo através do mapeamento
+            Filme filme = _mapper.Map<Filme>(filmeDTO);
 
             _context.Filmes.Add(filme); // Contexto usado para adicionarmos o filme no banco de dados
             _context.SaveChanges(); // Salvando as alterações no banco
@@ -48,15 +45,8 @@ namespace FilmesAPI.Controllers
 
             if (filme != null)
             {
-                ReadFilmeDTO filmeDTO = new ReadFilmeDTO
-                {
-                    Id = filme.Id,
-                    Titulo = filme.Titulo,
-                    Diretor = filme.Diretor,
-                    Genero = filme.Genero,
-                    Duracao = filme.Duracao,
-                    HoraDaConsulta = DateTime.Now
-                };
+                // Convertendo através do mapeamento
+                ReadFilmeDTO filmeDTO = _mapper.Map<ReadFilmeDTO>(filme);
 
                 return Ok(filmeDTO); // Retornando OK se acharmos o filme
             }
@@ -73,10 +63,8 @@ namespace FilmesAPI.Controllers
                 return NotFound();
             }
 
-            filme.Titulo = filmeDTONovo.Titulo;
-            filme.Diretor = filmeDTONovo.Diretor;
-            filme.Genero = filmeDTONovo.Genero;
-            filme.Duracao = filmeDTONovo.Duracao;
+            // Transformando nosso filmeDTONovo em Filme através do mapeamento
+            _mapper.Map(filmeDTONovo, filme);
 
             _context.SaveChanges();
 
